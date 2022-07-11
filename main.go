@@ -38,6 +38,9 @@ func setupRouter() *gin.Engine {
 	router.GET("/ping", controllers.GetPing)
 	api := router.Group("/")
 	{
+		api.GET("", func(ctx *gin.Context) {
+			controllers.GetIndex(ctx)
+		})
 		platforms := api.Group("/platforms")
 		{
 			platforms.GET("", func(ctx *gin.Context) {
