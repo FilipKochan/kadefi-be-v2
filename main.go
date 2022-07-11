@@ -21,10 +21,7 @@ func main() {
 }
 
 func setupRouter() *gin.Engine {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err.Error())
-		panic(err.Error())
-	}
+	godotenv.Load(".env")
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
