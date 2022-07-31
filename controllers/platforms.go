@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetPlatforms(ctx *gin.Context, db *gorm.DB) {
+type PlatformsController struct{}
+
+func (_ PlatformsController) Get(ctx *gin.Context, db *gorm.DB) {
 	platforms := []models.Platform{}
 	err := db.Find(&platforms).Error
 	if err != nil {
@@ -19,7 +21,7 @@ func GetPlatforms(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, platforms)
 }
 
-func GetPlatform(ctx *gin.Context, db *gorm.DB) {
+func (_ PlatformsController) GetOne(ctx *gin.Context, db *gorm.DB) {
 	platform := models.Platform{}
 
 	if err := ctx.ShouldBindUri(&platform); err != nil {

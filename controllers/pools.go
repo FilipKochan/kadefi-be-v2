@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetPools(ctx *gin.Context, db *gorm.DB) {
+type PoolsController struct{}
+
+func (_ PoolsController) Get(ctx *gin.Context, db *gorm.DB) {
 	pools := []models.Pool{}
 
 	err := db.Preload("Platform").Preload("Token").Find(&pools).Error
@@ -19,7 +21,7 @@ func GetPools(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, pools)
 }
 
-func GetPool(ctx *gin.Context, db *gorm.DB) {
+func (_ PoolsController) GetOne(ctx *gin.Context, db *gorm.DB) {
 	pool := models.Pool{}
 
 	if err := ctx.BindUri(&pool); err != nil {
@@ -40,7 +42,7 @@ func GetPool(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, pool)
 }
 
-func GetPoolByPlatformToken(ctx *gin.Context, db *gorm.DB) {
+func (_ PoolsController) GetByPlatformToken(ctx *gin.Context, db *gorm.DB) {
 	pool := models.Pool{}
 
 	if err := ctx.BindUri(&pool); err != nil {

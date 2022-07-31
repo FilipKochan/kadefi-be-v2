@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetTokens(ctx *gin.Context, db *gorm.DB) {
+type TokensController struct{}
+
+func (_ TokensController) Get(ctx *gin.Context, db *gorm.DB) {
 	tokens := []models.Token{}
 	err := db.Find(&tokens).Error
 	if err != nil {
@@ -19,7 +21,7 @@ func GetTokens(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, &tokens)
 }
 
-func GetToken(ctx *gin.Context, db *gorm.DB) {
+func (_ TokensController) GetOne(ctx *gin.Context, db *gorm.DB) {
 	token := models.Token{}
 
 	if err := ctx.ShouldBindUri(&token); err != nil {

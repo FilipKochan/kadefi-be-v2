@@ -6,10 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetPing(c *gin.Context) {
+type IndexController struct{}
+
+type PingController struct{}
+
+func (_ PingController) Get(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
-func GetIndex(c *gin.Context) {
+func (_ IndexController) Get(c *gin.Context) {
 	c.String(http.StatusOK, "Backend for <a href='http://kadefi.app'>kadefi.app</a>")
 }

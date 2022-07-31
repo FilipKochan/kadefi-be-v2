@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetKdaUsdRates(ctx *gin.Context, db *gorm.DB) {
+type KdaUsdRatesController struct{}
+
+func (_ KdaUsdRatesController) Get(ctx *gin.Context, db *gorm.DB) {
 	rates := []models.KdaToUsdRate{}
 
 	if err := db.Find(&rates).Error; err != nil {
@@ -19,7 +21,7 @@ func GetKdaUsdRates(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, rates)
 }
 
-func PostKdaUsdRate(ctx *gin.Context, db *gorm.DB) {
+func (_ KdaUsdRatesController) Post(ctx *gin.Context, db *gorm.DB) {
 	rate := models.KdaToUsdRate{}
 
 	if err := ctx.BindJSON(&rate); err != nil {

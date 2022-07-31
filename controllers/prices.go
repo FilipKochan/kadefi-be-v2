@@ -8,7 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetPrices(ctx *gin.Context, db *gorm.DB) {
+type PricesController struct{}
+
+func (_ PricesController) Get(ctx *gin.Context, db *gorm.DB) {
 	prices := []models.PriceRecord{}
 
 	if err := db.Limit(2).Preload("Pool").Preload("Pool.Platform").Preload("Pool.Token").Find(&prices).Error; err != nil {
@@ -18,7 +20,7 @@ func GetPrices(ctx *gin.Context, db *gorm.DB) {
 	ctx.IndentedJSON(http.StatusOK, prices)
 }
 
-func PostPrice(ctx *gin.Context, db *gorm.DB) {
+func (_ PricesController) Post(ctx *gin.Context, db *gorm.DB) {
 	price := models.PriceRecord{}
 
 	if err := ctx.BindJSON(&price); err != nil {

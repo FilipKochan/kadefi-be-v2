@@ -23,7 +23,7 @@ func main() {
 func setupRouter() *gin.Engine {
 	godotenv.Load(".env")
 
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.SetTrustedProxies([]string{os.Getenv("APP_URL")})
 	db, err := dbConnect()
@@ -35,58 +35,66 @@ func setupRouter() *gin.Engine {
 
 	models.Migrate(db)
 
-	router.GET("/ping", controllers.GetPing)
+	pingController := controllers.PingController{}
+	indexController := controllers.IndexController{}
+	platformController := controllers.PlatformsController{}
+	tokensController := controllers.TokensController{}
+	poolsController := controllers.PoolsController{}
+	kdaUsdRatesController := controllers.KdaUsdRatesController{}
+	pricesController := controllers.PricesController{}
+
+	router.GET("/ping", pingController.Get)
 	api := router.Group("/")
 	{
 		api.GET("", func(ctx *gin.Context) {
-			controllers.GetIndex(ctx)
+			indexController.Get(ctx)
 		})
 		platforms := api.Group("/platforms")
 		{
 			platforms.GET("", func(ctx *gin.Context) {
-				controllers.GetPlatforms(ctx, db)
+				platformController.Get(ctx, db)
 			})
 			platforms.GET(":id", func(ctx *gin.Context) {
-				controllers.GetPlatform(ctx, db)
+				platformController.GetOne(ctx, db)
 			})
 		}
 		tokens := api.Group("/tokens")
 		{
 			tokens.GET("", func(ctx *gin.Context) {
-				controllers.GetTokens(ctx, db)
+				tokensController.Get(ctx, db)
 			})
 			tokens.GET(":id", func(ctx *gin.Context) {
-				controllers.GetToken(ctx, db)
+				tokensController.GetOne(ctx, db)
 			})
 		}
 		pools := api.Group("/pools")
 		{
 			pools.GET("", func(ctx *gin.Context) {
-				controllers.GetPools(ctx, db)
+				poolsController.Get(ctx, db)
 			})
 			pools.GET("/platforms/:platformId/tokens/:tokenId", func(ctx *gin.Context) {
-				controllers.GetPoolByPlatformToken(ctx, db)
+				poolsController.GetByPlatformToken(ctx, db)
 			})
 			pools.GET(":id", func(ctx *gin.Context) {
-				controllers.GetPool(ctx, db)
+				poolsController.GetOne(ctx, db)
 			})
 		}
 		kdaUsdRates := api.Group("/kda-usd-rates")
 		{
 			kdaUsdRates.GET("", func(ctx *gin.Context) {
-				controllers.GetKdaUsdRates(ctx, db)
+				kdaUsdRatesController.Get(ctx, db)
 			})
 			kdaUsdRates.POST("", func(ctx *gin.Context) {
-				controllers.PostKdaUsdRate(ctx, db)
+				kdaUsdRatesController.Post(ctx, db)
 			})
 		}
 		prices := api.Group("/prices")
 		{
 			prices.GET("", func(ctx *gin.Context) {
-				controllers.GetPrices(ctx, db)
+				pricesController.Get(ctx, db)
 			})
 			prices.POST("", func(ctx *gin.Context) {
-				controllers.PostPrice(ctx, db)
+				pricesController.Post(ctx, db)
 			})
 		}
 	}
